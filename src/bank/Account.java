@@ -85,4 +85,10 @@ public class Account {
         // OTHERWISE, LOG ERROR
         } else { misc.log("Rate cannot be Negative!"); }
     }
+    
+    // ADD INTEREST
+    public void add_interest() {
+        this.balance += this.balance * this.rate;
+        misc.log("Added Interest!");
+    }
 }
