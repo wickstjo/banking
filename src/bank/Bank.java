@@ -5,12 +5,12 @@ public class Bank {
         
         // FETCH MODULES
         Backend backend = new Backend();
-        Ui ui = new Ui();
+        Ui ui = new Ui(backend);
         
         // FILL THE MAP WITH TESTUSERS
         backend.fill();
         
         // INITIALIZE THE INTERFACE
-        ui.init();
+        ui.main_menu();
     }
 }

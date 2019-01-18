@@ -24,17 +24,17 @@ public class Account {
             
             // OWNER
             case "owner":
-                misc.log("Owner:\t\t\t" + this.owner);
+                misc.log("Owner:\t\t\t\t" + this.owner);
             break;
                 
             // RATE
             case "rate":
-                misc.log("Current Rate:\t\t\t" + this.rate);
+                misc.log("Rate:\t\t\t" + this.rate);
             break;
                 
             // BALANCE
             case "balance":
-                misc.log("Current Balance:\t\t\t" + this.balance);
+                misc.log("Balance:\t\t\t" + this.balance);
             break;
             
             // LOG ERROR WHEN REQUEST ISNT FOUND

@@ -26,6 +26,9 @@ public class Backend {
     // FILL THE ACCOUNT MAP WITH TEST-USERS
     public void fill() {
         
+        // LOG HEADER
+        misc.log("// FILLING ACCOUNTS MAP");
+        
         // USERNAMES
         List<String> names = Arrays.asList("foo", "bar", "biz");
         
@@ -45,18 +48,51 @@ public class Backend {
         int random_number = (int) (Math.random() * (this.max - this.min)) + this.min;
         
         // CHECK IF IT ALREADY EXISTS
-        boolean check = misc.check(random_number, this.users);
+        boolean check = exists(random_number);
         
         // KEEP REROLLING UNTIL IT DOESNT
         while(check == true) {
             random_number = (int) (Math.random() * (this.max - this.min)) + this.min;
-            check = misc.check(random_number, this.users);
+            check = exists(random_number);
         }
         
         // ADD IT TO THE MAP
         this.users.put(random_number, user);
         
         // LOG SUCCESS MESSAGE
-        misc.log("User '" + name + "' added!");
+        misc.log("\t> User '" + name + "' added!");
+    }
+    
+    // RETURN ACCOUNT INSTANCE
+    public Account view_user(Integer _number) {
+        return users.get(_number);
+    }
+    
+    // VIEW ALL ACCOUNT NUMBERS
+    public void view_all() {
+        
+        misc.log("\n// VIEW ALL ACCOUNTS");
+        
+        // LOOP THROUGH EACH ACCOUNT NUMBER
+        for (Integer key : users.keySet()) {
+            
+            misc.log("\t> " + key);
+        }
+    }
+    
+    // CHECK WHETHER AN ACCOUNT NUMBER EXISTS
+    public boolean exists(Integer number) {
+        
+        // DEFAULT AS FALSE
+        boolean response = false;
+        
+        // LOOP THROUGH EACH KEY
+        for (Integer key : this.users.keySet()) {
+            
+            // CHANGE RESPONSE TO TRUE IF IT EXISTS
+            if (number == key) { response = true; }
+        }
+        
+        return response;
     }
 }
