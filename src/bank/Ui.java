@@ -1,6 +1,8 @@
 package bank;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Ui {
@@ -32,16 +34,16 @@ public class Ui {
         // MENU HEADER
         header("MAIN MENU");
         
-        // MENU OPTIONS -- CHANGE TO KEY VALUE LIST WITH CORRESPONDING INDEX NUMBER
-        List<String> options = Arrays.asList(
-            "View all Accounts",
-            "User Actions", 
-            "Application Actions"
-        );
+        // MENU OPTIONS
+        Map<Integer, String> options = new HashMap<>();
+            options.put(1, "View all Accounts");
+            options.put(2, "User Actions");
+            options.put(3, "Application Actions");
+            options.put(9, "Terminate Program");
         
-        // LOOP THROUGH THE NAMES & ADD NEW ACCOUNT INSTANCE
-        for(int x = 0; x < options.size(); x++) {
-            misc.log("\t" + (x + 1) + ". " + options.get(x));
+        // CREATE A ROW FOR EACH OPTION
+        for (Integer key : options.keySet()) {
+            misc.log("\t" + key + ". " + options.get(key));
         }
         
         // ASK WHAT TO DO NEXT
@@ -62,12 +64,12 @@ public class Ui {
                 break;
                 
             case 9:
-                misc.success("// APPLICATION KILLED");
+                misc.error("\n// APPLICATION KILLED");
                 System.exit(0);
                 break;
                 
             default:
-                misc.error("// OUT OF BOUNDS, TRY AGAIN!");
+                misc.error("\n// OUT OF BOUNDS, TRY AGAIN!");
                 main_menu();
                 break;
         }

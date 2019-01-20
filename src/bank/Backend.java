@@ -86,11 +86,9 @@ public class Backend {
         // DEFAULT AS FALSE
         boolean response = false;
         
-        // LOOP THROUGH EACH KEY
-        for (Integer key : this.users.keySet()) {
-            
-            // CHANGE RESPONSE TO TRUE IF IT EXISTS
-            if (number == key) { response = true; }
+        // CHANGE TO TRUE IF THE KEY EXISTS
+        if (users.get(number) != null) {
+            response = true;
         }
         
         return response;
