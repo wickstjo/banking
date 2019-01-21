@@ -24,7 +24,7 @@ public class Account {
             
             // OWNER
             case "owner":
-                misc.log("Owner:\t\t\t\t" + this.owner);
+                misc.log("Owner:\t\t\t" + this.owner);
             break;
                 
             // RATE
@@ -34,7 +34,7 @@ public class Account {
                 
             // BALANCE
             case "balance":
-                misc.log("Balance:\t\t\t" + this.balance);
+                misc.log("Balance:\t\t" + this.balance);
             break;
             
             // LOG ERROR WHEN REQUEST ISNT FOUND
@@ -43,6 +43,18 @@ public class Account {
             break; 
         }
     }
+
+    // INSPECT CURRENT STATS
+    public void inspect() {
+        
+        // HEADER
+        misc.log("\n// INSPECT CURRENT STATS");
+        
+        // LOG EACH VALUE
+        get("owner");
+        get("balance");
+        get("rate");
+    }
     
     // WITHDRAW MONEY
     public void withdraw(double _amount) {
@@ -50,13 +62,10 @@ public class Account {
         // IF BALANCE IS HIGHER TO REQUESTED AMOUNT
         if (this.balance >= _amount) {
             this.balance -= _amount;
-            misc.log("Withdrew:\t\t\t\t" + _amount);
+            misc.success("YOU WITHDREW: " + _amount);
             
         // OTHERWISE LOG ERROR
-        } else { misc.log("Not enough Balance!"); }
-        
-        // EITHER WAY, LOG BALANCE
-        get("balance");
+        } else { misc.error("NOT ENOUGH BALANCE!"); }
     }
     
     // DEPOSIT MONEY
@@ -66,8 +75,7 @@ public class Account {
         this.balance += _amount;
         
         // LOG MESSAGE
-        misc.log("Deposit:\t\t\t\t" + _amount);
-        get("balance");
+        misc.success("YOU DEPOSITED: " + _amount);
     }
     
     // CHANGE RATE
@@ -80,15 +88,15 @@ public class Account {
             this.rate += _rate;
 
             // LOG MESSAGE
-            misc.log("Rate Changed to:\t\t\t\t" + _rate);
+            misc.success("RATE CHANGED TO: " + _rate);
             
         // OTHERWISE, LOG ERROR
-        } else { misc.log("Rate cannot be Negative!"); }
+        } else { misc.error("RATE CANNOT BE NEGATIVE!"); }
     }
     
     // ADD INTEREST
     public void add_interest() {
         this.balance += this.balance * this.rate;
-        misc.log("Added Interest!");
+        misc.success("ADDED INTEREST!");
     }
 }

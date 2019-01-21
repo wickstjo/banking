@@ -1,7 +1,5 @@
 package bank;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -36,9 +34,9 @@ public class Ui {
         
         // MENU OPTIONS
         Map<Integer, String> options = new HashMap<>();
-            options.put(1, "View all Accounts");
-            options.put(2, "User Actions");
-            options.put(3, "Application Actions");
+            options.put(1, "View All Accounts");
+            options.put(2, "Add User");
+            options.put(3, "User Actions");
             options.put(9, "Terminate Program");
         
         // CREATE A ROW FOR EACH OPTION
@@ -56,45 +54,116 @@ public class Ui {
                 break;
                 
             case 2:
-                select_user_menu();
+                System.out.print("\nENTER A USERNAME:\n\t> ");
+                String _name = scan.next();
+                backend.add_user(_name);
+                main_menu();
                 break;
                 
             case 3:
-                actions_menu();
+                user_selection();
                 break;
                 
             case 9:
-                misc.error("\n// APPLICATION KILLED");
+                misc.error("// APPLICATION KILLED");
                 System.exit(0);
                 break;
                 
             default:
-                misc.error("\n// OUT OF BOUNDS, TRY AGAIN!");
+                misc.error("// OUT OF BOUNDS, TRY AGAIN!");
                 main_menu();
                 break;
         }
     }
     
     // USER MENU
-    public void select_user_menu() {
+    public void user_selection() {
         
         // ASK FOR AN ACCOUNT NUMBER & CHECK IF IT EXISTS
-        Integer response = question("ENTER A VALID ACCOUNT NUMBER:");
+        Integer response = question("ENTER ACCOUNT NUMBER:");
         boolean check = backend.exists(response);
         
         // WHILE IT DOESNT
         while (check == false) {
             
-            // ASK FOR THE USER TO TRY AGAIN
-            response = question("NOT FOUND, TRY AGAIN:");
-            check = backend.exists(response);
+            // CHECK IF RESPONSE IS ZERO
+            if (response != 0) {
+            
+                // ASK FOR THE USER TO TRY AGAIN
+                response = question("NOT FOUND, TRY AGAIN OR '0' TO GO BACK:");
+                check = backend.exists(response);
+            
+            // PROMPT MAIN MENU IF ZERO IS ENTERED
+            } else { main_menu(); }
         }
 
-        // LOG SUCCESS
-        misc.success("// ACCOUNT FOUND!");
+        // OPEN USER ACTIONS MENU
+        user_action(response);
     }
     
-    public void actions_menu() {
-        misc.success("// ACTIONS MENU");
+    // USER ACTIONS MENU
+    public void user_action(Integer user) {
+        
+        // FETCH REQUESTED ACCOUNT
+        Account target = backend.fetch_user(user);
+        
+        // MENU HEADER
+        header("USER ACTIONS (" + user + ")");
+        
+        // MENU OPTIONS
+        Map<Integer, String> options = new HashMap<>();
+            options.put(1, "Inspect Stats");
+            options.put(2, "Withdraw Funds");
+            options.put(3, "Deposit Funds");
+            options.put(4, "Change Rate");
+            options.put(8, "Back to Main Menu");
+            options.put(9, "Terminate Program");
+        
+        // CREATE A ROW FOR EACH OPTION
+        for (Integer key : options.keySet()) {
+            misc.log("\t" + key + ". " + options.get(key));
+        }
+        
+        // ASK WHAT TO DO NEXT
+        Integer response = question("WHAT WOULD YOU LIKE TO DO?");
+        
+        switch (response) {
+            case 1:
+                target.inspect();
+                user_action(user);
+                break;
+                
+            case 2:
+                response = question("HOW MUCH?");
+                target.withdraw(response);
+                user_action(user);
+                break;
+                
+            case 3:
+                response = question("HOW MUCH?");
+                target.deposit(response);
+                user_action(user);
+                break;
+                
+            case 4:
+                response = question("TO WHAT? (MORE THAN ZERO)");
+                target.change_rate(response);
+                user_action(user);
+                break;
+                
+            case 8:
+                main_menu();
+                break;
+                
+            case 9:
+                misc.error("// APPLICATION KILLED");
+                System.exit(0);
+                break;
+                
+            default:
+                misc.error("// OUT OF BOUNDS, TRY AGAIN!");
+                main_menu();
+                break;
+        }
     }
 }

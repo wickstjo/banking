@@ -60,11 +60,11 @@ public class Backend {
         this.users.put(random_number, user);
         
         // LOG SUCCESS MESSAGE
-        misc.log("\t> User '" + name + "' added!");
+        misc.success("USER '" + name + "' WAS ADDED!");
     }
     
     // RETURN ACCOUNT INSTANCE
-    public Account view_user(Integer _number) {
+    public Account fetch_user(Integer _number) {
         return users.get(_number);
     }
     
