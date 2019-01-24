@@ -1,4 +1,5 @@
 package bank;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -15,22 +16,33 @@ public class Ui {
     // CONSTRUCTOR -- SET THE BACKEND MODULE
     public Ui (Backend _backend) { this.backend = _backend; }
     
-    // QUESTION BLOCK
-    public Integer question(String _question) {
+    // MENU RELATED QUESTION
+    public String question(String _question, String _whitelist) {
         
-        // ASK THE QUESTION & RETURN THE RESPONSE
+        // ASK THE QUESTION & SAVE THE ANSWER
         System.out.print("\n" + _question + "\n\t> ");
-        return scan.nextInt();
+        String answer = scan.next();
+        
+        // CONSTRUCT THE WHITELIST & CHECK THE ANSWER TYPE
+        ArrayList<String> whitelist = misc.create_whitelist(_whitelist);
+        String check = misc.check_type(answer);
+        
+        // IF THE TYPE ISNT WHITELISTED
+        if (whitelist.contains(check) == false) {
+            
+            // PROMPT ERROR & ASK AGAIN
+            misc.error("INPUT ERROR, ONLY INTEGERS ALLOWED!");
+            question(_question, _whitelist);
+        }
+        
+        return answer;
     }
-    
-    // MENU HEADER
-    public void header(String header) { misc.log("\n// " + header); }
     
     // MAIN MENU
     public void main_menu() {
         
         // MENU HEADER
-        header("MAIN MENU");
+        misc.log("MAIN MENU");
         
         // MENU OPTIONS
         Map<Integer, String> options = new HashMap<>();
@@ -45,18 +57,18 @@ public class Ui {
         }
         
         // ASK WHAT TO DO NEXT
-        Integer response = question("WHAT WOULD YOU LIKE TO DO?");
-        
-        switch (response) {
+        String response = question("WHAT WOULD YOU LIKE TO DO?", "int");
+
+        // CONVERT TO INTEGER & TRIGGER NEXT STEP
+        switch (Integer.parseInt(response)) {
             case 1:
                 backend.view_all();
                 main_menu();
                 break;
                 
             case 2:
-                System.out.print("\nENTER A USERNAME:\n\t> ");
-                String _name = scan.next();
-                backend.add_user(_name);
+                String name = question("ENTER A USERNAME:", "str");
+                backend.add_user(name);
                 main_menu();
                 break;
                 
@@ -65,12 +77,11 @@ public class Ui {
                 break;
                 
             case 9:
-                misc.error("// APPLICATION KILLED");
-                System.exit(0);
+                kill_app();
                 break;
                 
             default:
-                misc.error("// OUT OF BOUNDS, TRY AGAIN!");
+                misc.error("OUT OF BOUNDS, TRY AGAIN!");
                 main_menu();
                 break;
         }
@@ -79,36 +90,25 @@ public class Ui {
     // USER MENU
     public void user_selection() {
         
-        // ASK FOR AN ACCOUNT NUMBER & CHECK IF IT EXISTS
-        Integer response = question("ENTER ACCOUNT NUMBER:");
-        boolean check = backend.exists(response);
+        // ASK FOR AN ACCOUNT NUMBER & CONVERT IT TO AN INTEGER
+        String response = question("ENTER ACCOUNT NUMBER:", "int");
+        Integer converted = Integer.parseInt(response);
         
-        // WHILE IT DOESNT
-        while (check == false) {
-            
-            // CHECK IF RESPONSE IS ZERO
-            if (response != 0) {
-            
-                // ASK FOR THE USER TO TRY AGAIN
-                response = question("NOT FOUND, TRY AGAIN OR '0' TO GO BACK:");
-                check = backend.exists(response);
-            
-            // PROMPT MAIN MENU IF ZERO IS ENTERED
-            } else { main_menu(); }
-        }
+        // CHECK IF IT EXISTS
+        boolean check = backend.exists(converted);
+        
+        // IF IT DOESNT -- ASK AGAIN
+        if (check == false) { user_selection(); }
 
         // OPEN USER ACTIONS MENU
-        user_action(response);
+        user_action(converted);
     }
     
     // USER ACTIONS MENU
     public void user_action(Integer user) {
         
-        // FETCH REQUESTED ACCOUNT
-        Account target = backend.fetch_user(user);
-        
         // MENU HEADER
-        header("USER ACTIONS (" + user + ")");
+        misc.log("USER ACTIONS (" + user + ")");
         
         // MENU OPTIONS
         Map<Integer, String> options = new HashMap<>();
@@ -124,17 +124,20 @@ public class Ui {
             misc.log("\t" + key + ". " + options.get(key));
         }
         
-        // ASK WHAT TO DO NEXT
-        Integer response = question("WHAT WOULD YOU LIKE TO DO?");
+        // FETCH REQUESTED ACCOUNT
+        Account target = backend.fetch_user(user);
         
-        switch (response) {
+        // ASK WHAT TO DO NEXT
+        String response = question("WHAT WOULD YOU LIKE TO DO?", "int");
+        
+        switch (Integer.parseInt(response)) {
             case 1:
                 target.inspect();
                 user_action(user);
                 break;
                 
             case 2:
-                response = question("HOW MUCH?");
+                response = question("HOW MUCH?", "int, dbl");
                 target.withdraw(response);
                 user_action(user);
                 break;
@@ -165,5 +168,11 @@ public class Ui {
                 main_menu();
                 break;
         }
+    }
+    
+    // KILL APPLICATION
+    public void kill_app() {
+        misc.error("APPLICATION KILLED");
+        System.exit(0);
     }
 }

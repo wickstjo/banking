@@ -57,12 +57,15 @@ public class Account {
     }
     
     // WITHDRAW MONEY
-    public void withdraw(double _amount) {
+    public void withdraw(String _amount) {
+        
+        // CONVERT TO DOUBLE
+        double amount = Double.parseDouble(_amount);
         
         // IF BALANCE IS HIGHER TO REQUESTED AMOUNT
-        if (this.balance >= _amount) {
-            this.balance -= _amount;
-            misc.success("YOU WITHDREW: " + _amount);
+        if (this.balance >= amount) {
+            this.balance -= amount;
+            misc.success("YOU WITHDREW: " + amount);
             
         // OTHERWISE LOG ERROR
         } else { misc.error("NOT ENOUGH BALANCE!"); }
