@@ -1,42 +1,25 @@
 package bank;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Backend {
     
     // USERS MAP
-    Map<Integer, Account> users;
+    private Map<Integer, Account> users;
     
     // DEFAULT VALUES FOR NEW ACCOUNTS
-    double default_rate = 0.035;
-    double default_balance = 0;
+    private double default_rate = 0.035;
+    private double default_balance = 0;
     
     // MIN-MAX VALUES FOR ACCOUNT NUMBER
-    Integer min = 100;
-    Integer max = 999;
+    private Integer min = 100;
+    private Integer max = 999;
     
     // FETCH THE MISC MODULE
-    Misc misc = new Misc();
+    private Misc misc = new Misc();
     
     // CONSTRUCTOR -- INITIALIZE THE MAP
     public Backend () { this.users = new HashMap<>(); }
-    
-    // FILL THE ACCOUNT MAP WITH TEST-USERS
-    public void fill() {
-        
-        // LOG HEADER
-        misc.log("// FILLING ACCOUNTS MAP");
-        
-        // USERNAMES
-        List<String> names = Arrays.asList("foo", "bar", "biz");
-        
-        // LOOP THROUGH THE NAMES & ADD NEW ACCOUNT INSTANCE
-        for(int x = 0; x < names.size(); x++) {
-            add_user(names.get(x));
-        }
-    }
     
     // ADD NEW USER
     public void add_user(String name) {
@@ -78,19 +61,12 @@ public class Backend {
             
             misc.log("\t> " + key);
         }
+        
+        // ADD SPACE SEPARATOR
+        misc.log("");
     }
     
-    // CHECK WHETHER AN ACCOUNT NUMBER EXISTS
     public boolean exists(Integer number) {
-        
-        // DEFAULT AS FALSE
-        boolean response = false;
-        
-        // CHANGE TO TRUE IF THE KEY EXISTS
-        if (users.get(number) != null) {
-            response = true;
-        }
-        
-        return response;
+        return users.containsKey(number);
     }
 }

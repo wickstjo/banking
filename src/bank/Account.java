@@ -24,22 +24,22 @@ public class Account {
             
             // OWNER
             case "owner":
-                misc.log("Owner:\t\t\t" + this.owner);
+                misc.log("OWNER:\t\t\t" + this.owner);
             break;
                 
             // RATE
             case "rate":
-                misc.log("Rate:\t\t\t" + this.rate);
+                misc.log("RATE:\t\t\t" + this.rate);
             break;
                 
             // BALANCE
             case "balance":
-                misc.log("Balance:\t\t" + this.balance);
+                misc.log("BALANCE:\t\t" + this.balance);
             break;
             
             // LOG ERROR WHEN REQUEST ISNT FOUND
             default:
-                misc.log("Request not found!");
+                misc.log("VARIABLE NOT FOUND!");
             break; 
         }
     }
@@ -54,13 +54,16 @@ public class Account {
         get("owner");
         get("balance");
         get("rate");
+        
+        // ADD LINEBREAK
+        misc.log("");
     }
     
     // WITHDRAW MONEY
     public void withdraw(String _amount) {
         
-        // CONVERT TO DOUBLE
-        double amount = Double.parseDouble(_amount);
+        // CONVERT STRING TO DOUBLE
+        double amount = misc.to_dbl(_amount);
         
         // IF BALANCE IS HIGHER TO REQUESTED AMOUNT
         if (this.balance >= amount) {
@@ -72,26 +75,32 @@ public class Account {
     }
     
     // DEPOSIT MONEY
-    public void deposit(double _amount) {
+    public void deposit(String _amount) {
+        
+        // CONVERT STRING TO DOUBLE
+        double amount = misc.to_dbl(_amount);
         
         // ADD TO EXISTING BALANCE
-        this.balance += _amount;
+        this.balance += amount;
         
         // LOG MESSAGE
-        misc.success("YOU DEPOSITED: " + _amount);
+        misc.success("YOU DEPOSITED: " + amount);
     }
     
     // CHANGE RATE
-    public void change_rate(double _rate) {
+    public void change_rate(String _rate) {
+        
+        // CONVERT STRING TO DOUBLE
+        double rate = misc.to_dbl(_rate);
         
         // IF THE REQUEST IS HIGHER THAN ZERO
-        if (_rate >= 0) {
+        if (rate >= 0) {
             
             // ADD TO EXISTING BALANCE
-            this.rate += _rate;
+            this.rate = rate;
 
             // LOG MESSAGE
-            misc.success("RATE CHANGED TO: " + _rate);
+            misc.success("RATE CHANGED TO: " + rate);
             
         // OTHERWISE, LOG ERROR
         } else { misc.error("RATE CANNOT BE NEGATIVE!"); }

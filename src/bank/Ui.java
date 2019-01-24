@@ -7,17 +7,17 @@ import java.util.Scanner;
 public class Ui {
     
     // FETCH ASSIST MODULES
-    Misc misc = new Misc();
-    static Scanner scan = new Scanner(System.in);
+    private final Misc misc = new Misc();
+    private static Scanner scan = new Scanner(System.in);
     
     // DECLARE THE BACKEND MODULE
-    Backend backend;
+    private Backend backend;
     
     // CONSTRUCTOR -- SET THE BACKEND MODULE
     public Ui (Backend _backend) { this.backend = _backend; }
     
     // MENU RELATED QUESTION
-    public String question(String _question, String _whitelist) {
+    private String question(String _question, String _whitelist) {
         
         // ASK THE QUESTION & SAVE THE ANSWER
         System.out.print("\n" + _question + "\n\t> ");
@@ -31,8 +31,8 @@ public class Ui {
         if (whitelist.contains(check) == false) {
             
             // PROMPT ERROR & ASK AGAIN
-            misc.error("INPUT ERROR, ONLY INTEGERS ALLOWED!");
-            question(_question, _whitelist);
+            misc.error("INPUT ERROR!");
+            answer = question(_question, _whitelist);
         }
         
         return answer;
@@ -88,24 +88,27 @@ public class Ui {
     }
     
     // USER MENU
-    public void user_selection() {
+    private void user_selection() {
         
         // ASK FOR AN ACCOUNT NUMBER & CONVERT IT TO AN INTEGER
-        String response = question("ENTER ACCOUNT NUMBER:", "int");
+        String response = question("ENTER VALID ACCOUNT NUMBER:", "int");
         Integer converted = Integer.parseInt(response);
         
         // CHECK IF IT EXISTS
         boolean check = backend.exists(converted);
         
         // IF IT DOESNT -- ASK AGAIN
-        if (check == false) { user_selection(); }
+        while (check == false) { user_selection(); }
 
+        // ADD LINEBREAK
+        misc.log("");
+        
         // OPEN USER ACTIONS MENU
         user_action(converted);
     }
     
     // USER ACTIONS MENU
-    public void user_action(Integer user) {
+    private void user_action(Integer user) {
         
         // MENU HEADER
         misc.log("USER ACTIONS (" + user + ")");
@@ -143,13 +146,13 @@ public class Ui {
                 break;
                 
             case 3:
-                response = question("HOW MUCH?");
+                response = question("HOW MUCH?", "int, dbl");
                 target.deposit(response);
                 user_action(user);
                 break;
                 
             case 4:
-                response = question("TO WHAT? (MORE THAN ZERO)");
+                response = question("TO WHAT? (MORE THAN ZERO)", "int, dbl");
                 target.change_rate(response);
                 user_action(user);
                 break;
@@ -159,8 +162,7 @@ public class Ui {
                 break;
                 
             case 9:
-                misc.error("// APPLICATION KILLED");
-                System.exit(0);
+                kill_app();
                 break;
                 
             default:
@@ -171,7 +173,7 @@ public class Ui {
     }
     
     // KILL APPLICATION
-    public void kill_app() {
+    private void kill_app() {
         misc.error("APPLICATION KILLED");
         System.exit(0);
     }

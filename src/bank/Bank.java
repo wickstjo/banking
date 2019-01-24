@@ -7,9 +7,6 @@ public class Bank {
         Backend backend = new Backend();
         Ui ui = new Ui(backend);
         
-        // FILL THE MAP WITH TESTUSERS
-        //backend.fill();
-        
         // INITIALIZE THE INTERFACE
         ui.main_menu();
     }

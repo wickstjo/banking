@@ -8,12 +8,12 @@ public class Misc {
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_BLUE = "\u001B[34m";
     
-    // SHORTHAND FOR LOGGING
+    // SHORTHAND FOR LOGGING -- TOO USED TO JAVASCRIPT
     public void log(Object content) { System.out.println(content); }
     
     // LOG COLORED TEXT
-    public void success(Object content) { log(ANSI_BLUE + "\n" + content + ANSI_RESET); }
-    public void error(Object content) { log(ANSI_RED + "\n" + content + ANSI_RESET); }
+    public void success(Object content) { log("\n" + ANSI_BLUE + content + ANSI_RESET + "\n"); }
+    public void error(Object content) { log("\n" + ANSI_RED + content + ANSI_RESET + "\n"); }
     
         // CONSTRUCT TEXT TO ARRAYLIST
     public ArrayList<String> create_whitelist(String _input) {
@@ -69,5 +69,23 @@ public class Misc {
         }
         
         return type;
+    }
+    
+    // CONVERT STRING TO DOUBLE
+    public double to_dbl(String _amount) {
+        
+        // PLACEHOLDER
+        double amount;
+        
+        // CHECK THE VARIABLE TYPE
+        String check = check_type(_amount);
+        
+        // IF ITS A DOUBLE
+        if (check == "dbl") { amount = Double.parseDouble(_amount);
+            
+        // IF ITS AN INTEGER
+        } else { amount = Integer.parseInt(_amount); }
+        
+        return amount;
     }
 }
