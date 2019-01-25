@@ -1,72 +1,76 @@
 package bank;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Backend {
     
-    // USERS MAP
-    private Map<Integer, Account> users;
-    
-    // DEFAULT VALUES FOR NEW ACCOUNTS
-    private double default_rate = 0.035;
-    private double default_balance = 0;
+    // INITIALIZE THE CHECKINGS & SAVINGS HASHMAPS
+    private Map<Integer, Checking> checkings = new HashMap<>();
+    private Map<Integer, Saving> savings = new HashMap<>();
     
     // MIN-MAX VALUES FOR ACCOUNT NUMBER
     private Integer min = 100;
     private Integer max = 999;
     
-    // FETCH THE MISC MODULE
-    private Misc misc = new Misc();
-    
-    // CONSTRUCTOR -- INITIALIZE THE MAP
-    public Backend () { this.users = new HashMap<>(); }
+    // CHECK IF THERE ARE EMPTY ACCOUNT NUMBERS LEFT
+    public boolean accounts_left() {
+        
+        // DEFAULT TO FALSE
+        boolean answer = false;
+        
+        // IF THERE IS SPACE -- CHANGE TO TRUE
+        if (savings.size() < (max - min)) { answer = true; }
+        
+        return answer;
+    }
     
     // ADD NEW USER
-    public void add_user(String name) {
+    public int add_user(String name) {
         
-        // CREATE NEW ACCOUNT INSTANCE
-        Account user = new Account (name, default_rate, default_balance);
-        
-        // RANDOMIZE A ACCOUNT NUMBER
+        // CREATE NEW INSTANCES
+        Checking temp_checking = new Checking(name);
+        Saving temp_saving = new Saving(name);
+
+        // RANDOMIZE THE ACCOUNT NUMBER
         int random_number = (int) (Math.random() * (this.max - this.min)) + this.min;
-        
+
         // CHECK IF IT ALREADY EXISTS
         boolean check = exists(random_number);
-        
+
         // KEEP REROLLING UNTIL IT DOESNT
         while(check == true) {
             random_number = (int) (Math.random() * (this.max - this.min)) + this.min;
             check = exists(random_number);
         }
+
+        // ADD THEM TO THEIR MAPS
+        this.checkings.put(random_number, temp_checking);
+        this.savings.put(random_number, temp_saving);
         
-        // ADD IT TO THE MAP
-        this.users.put(random_number, user);
-        
-        // LOG SUCCESS MESSAGE
-        misc.success("USER '" + name + "' WAS ADDED!");
+        return random_number;
     }
     
-    // RETURN ACCOUNT INSTANCE
-    public Account fetch_user(Integer _number) {
-        return users.get(_number);
+    // GET ALL REGISTERED ACCOUNT NUMBERS
+    public ArrayList<Integer> get_accounts() {
+        
+        // INITIALIZE TEMP ARRAYLIST
+        ArrayList<Integer> temp = new ArrayList<>();
+        
+        // LOOP IN ALL ACCOUNTS NUMBERS
+        for (Integer key : checkings.keySet()) { temp.add(key); }
+
+        return temp;
     }
     
-    // VIEW ALL ACCOUNT NUMBERS
-    public void view_all() {
-        
-        misc.log("\n// VIEW ALL ACCOUNTS");
-        
-        // LOOP THROUGH EACH ACCOUNT NUMBER
-        for (Integer key : users.keySet()) {
-            
-            misc.log("\t> " + key);
-        }
-        
-        // ADD SPACE SEPARATOR
-        misc.log("");
-    }
+    // GET USER SPECIFIC CHECKING/SAVINGS INSTANCE
+    public Checking get_checking(Integer _number) { return checkings.get(_number); }
+    public Saving get_saving(Integer _number) { return savings.get(_number); }
     
-    public boolean exists(Integer number) {
-        return users.containsKey(number);
+    // CHECK IF AN ACCOUNT NUMBER EXISTS
+    public boolean exists(Integer _number) { return checkings.containsKey(_number); }
+    
+    // ADD INTEREST TO ALL ACCOUNTS
+    public void reward_interest() {
     }
 }

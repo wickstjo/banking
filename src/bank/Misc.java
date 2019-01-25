@@ -19,7 +19,7 @@ public class Misc {
     public ArrayList<String> create_whitelist(String _input) {
         
         // INITIALIZE THE ARRAYLIST
-        ArrayList<String> whitelist = new ArrayList<String>();
+        ArrayList<String> whitelist = new ArrayList<>();
         
         // REMOVE SPACES & CONVERT INPUT TO ARRAY
         String[] temp = _input.replaceAll(" ","").split(",");
