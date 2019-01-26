@@ -10,11 +10,24 @@ public class Ui {
     private final Misc misc = new Misc();
     private final Scanner scan = new Scanner(System.in);
     
-    // DECLARE THE BACKEND MODULE
+    // DECLARE ASSIST MODULES
     private final Backend backend;
+    private final Timer timer;
     
-    // CONSTRUCTOR -- SET THE BACKEND MODULE
-    public Ui(Backend _backend) { this.backend = _backend; }
+    // CONSTRUCTOR
+    public Ui(Backend _backend) {
+        
+        // SET THE BACKEND MODULE & START THE TIMER
+        this.backend = _backend;
+        
+        // ATTACH THE TIMER OBJECT & START IT
+        this.timer = new Timer(this.backend);
+        start_timer();
+    } 
+    
+    // START/STOP TIMER
+    public void start_timer() { this.timer.start(); }
+    public void stop_timer() { this.timer.interrupt(); }
     
     // MAIN MENU
     public void main_menu() {
@@ -84,6 +97,7 @@ public class Ui {
     // KILL APPLICATION
     private void kill_app() {
         misc.error("APPLICATION KILLED");
+        stop_timer();
         System.exit(0);
     }
     
@@ -196,15 +210,15 @@ public class Ui {
     
     private void account_overview(Checking checkings, Saving savings) {
         
-        // LOG OUT RELEVANT VALUES
+        // LOG OUT RELEVANT VALUES -- ROUND NUMBERS TO TWO DECIMALS
         misc.log("\nACCOUNT OWNER:\t\t\t" + checkings.get_owner());
         misc.log("----");
-        misc.log("CHECKINGS BALANCE:\t\t" + checkings.get_balance());
-        misc.log("TOTAL WITHDRAWS:\t\t" + checkings.get_withdraws());
-        misc.log("TOTAL DEPOSITS:\t\t\t" + checkings.get_deposits());
+        misc.log("CHECKINGS BALANCE:\t\t" + misc.round(checkings.get_balance(), 2));
+        misc.log("TOTAL WITHDRAWS:\t\t" + misc.round(checkings.get_withdraws(), 2));
+        misc.log("TOTAL DEPOSITS:\t\t\t" + misc.round(checkings.get_deposits(), 2));
         misc.log("----");
-        misc.log("SAVINGS BALANCE:\t\t" + savings.get_balance());
-        misc.log("INTEREST EARNINGS:\t\t" + savings.get_earnings() + "\n");
+        misc.log("SAVINGS BALANCE:\t\t" + misc.round(savings.get_balance(), 2));
+        misc.log("INTEREST EARNINGS:\t\t" + misc.round(savings.get_earnings(), 2) + "\n");
     }
     
     private void checkings_menu(Checking checkings, Integer user) {

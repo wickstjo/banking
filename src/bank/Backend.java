@@ -6,12 +6,12 @@ import java.util.Map;
 public class Backend {
     
     // INITIALIZE THE CHECKINGS & SAVINGS HASHMAPS
-    private Map<Integer, Checking> checkings = new HashMap<>();
-    private Map<Integer, Saving> savings = new HashMap<>();
+    private final Map<Integer, Checking> checkings = new HashMap<>();
+    private final Map<Integer, Saving> savings = new HashMap<>();
     
     // MIN-MAX VALUES FOR ACCOUNT NUMBER
-    private Integer min = 100;
-    private Integer max = 999;
+    private final Integer min = 100;
+    private final Integer max = 999;
     
     // CHECK IF THERE ARE EMPTY ACCOUNT NUMBERS LEFT
     public boolean accounts_left() {
@@ -72,5 +72,20 @@ public class Backend {
     
     // ADD INTEREST TO ALL ACCOUNTS
     public void reward_interest() {
+        
+        // CHECK IF THERE ARE ANY ACCOUNTS
+        if (this.checkings.size() != 0) {
+        
+            // LOOP THROUGH EACH ACCOUNT
+            for (Integer account_number : this.checkings.keySet()) {
+
+                // ADD INTEREST TO CHECKINGS ACCOUNT
+                this.checkings.get(account_number).add_interest();
+
+                // ADD INTEREST TO SAVINGS ACCOUNT
+                this.savings.get(account_number).add_interest();
+            }
+        
+        }
     }
 }
