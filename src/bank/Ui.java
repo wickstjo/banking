@@ -26,8 +26,8 @@ public class Ui {
     } 
     
     // START/STOP TIMER
-    public void start_timer() { this.timer.start(); }
-    public void stop_timer() { this.timer.interrupt(); }
+    private void start_timer() { this.timer.start(); }
+    private void stop_timer() { this.timer.interrupt(); }
     
     // MAIN MENU
     public void main_menu() {
@@ -111,7 +111,7 @@ public class Ui {
         // FETCH ALL REGISTERED ACCOUNT NUMBERS
         ArrayList<Integer> accounts = backend.get_accounts();
         
-        if (accounts.size() != 0) {
+        if (!accounts.isEmpty()) {
         
             // LOOP THROUGH & LOG ALL THE NUMBERS
             for (Integer key : accounts) { misc.log("\t" + key); }
@@ -171,12 +171,14 @@ public class Ui {
         // FETCH ACCOUNTS CHECKINGS/SAVINGS INSTANCES
         Checking checkings = backend.get_checking(user);
         Saving savings = backend.get_saving(user);
+        Credit credits = backend.get_credit(user);
         
         // MENU OPTIONS
         Map<Integer, String> options = new HashMap<>();
             options.put(1, "ACCOUNT OVERVIEW");
             options.put(2, "CHECKINGS ACCOUNT");
             options.put(3, "SAVINGS ACCOUNT");
+            options.put(4, "CREDIT ACCOUNT");
             options.put(8, "GO BACK");
             options.put(9, "TERMINATE PROGRAM");
         
@@ -190,12 +192,13 @@ public class Ui {
         
         switch (Integer.parseInt(response)) {
             case 1:
-                account_overview(checkings, savings);
+                account_overview(checkings, savings, credits);
                 account_menu(user);
             break;
                 
             case 2: misc.log(""); checkings_menu(checkings, user); break;
             case 3: savings_menu(savings, user); break;
+            case 4: misc.log(""); credits_menu(credits, user); break;
             case 8: misc.log(""); main_menu(); break;
             case 9: kill_app(); break;
                 
@@ -208,7 +211,7 @@ public class Ui {
     
     // -------- USER MENU OPTIONS
     
-    private void account_overview(Checking checkings, Saving savings) {
+    private void account_overview(Checking checkings, Saving savings, Credit credits) {
         
         // LOG OUT RELEVANT VALUES -- ROUND NUMBERS TO TWO DECIMALS
         misc.log("\nACCOUNT OWNER:\t\t\t" + checkings.get_owner());
@@ -218,7 +221,11 @@ public class Ui {
         misc.log("TOTAL DEPOSITS:\t\t\t" + misc.round(checkings.get_deposits(), 2));
         misc.log("----");
         misc.log("SAVINGS BALANCE:\t\t" + misc.round(savings.get_balance(), 2));
-        misc.log("INTEREST EARNINGS:\t\t" + misc.round(savings.get_earnings(), 2) + "\n");
+        misc.log("INTEREST EARNINGS:\t\t" + misc.round(savings.get_earnings(), 2));
+        misc.log("----");
+        misc.log("WITHDRAWABLE CREDIT:\t\t" + misc.round(credits.get_remaining(), 2));
+        misc.log("CURRENT TAB:\t\t\t" + misc.round(credits.tab(), 2));
+        misc.log("ONLY INTEREST:\t\t\t" + misc.round(credits.get_interest(), 2) + "\n");
     }
     
     private void checkings_menu(Checking checkings, Integer user) {
@@ -303,6 +310,47 @@ public class Ui {
         }
     }
 
+    private void credits_menu(Credit credits, Integer user) {
+    
+                // HEADER
+        misc.log("CREDITS MENU");
+        
+        // MENU OPTIONS
+        Map<Integer, String> options = new HashMap<>();
+            options.put(1, "WITHDRAW FUNDS");
+            options.put(2, "DEPOSIT FUNDS");
+            options.put(8, "GO BACK");
+            options.put(9, "TERMINATE PROGRAM");
+        
+        // CREATE A ROW FOR EACH OPTION
+        for (Integer key : options.keySet()) {
+            misc.log("\t" + key + ". " + options.get(key));
+        }
+        
+        // ASK WHAT TO DO NEXT
+        String response = question("WHAT WOULD YOU LIKE TO DO?", "int");
+        
+        switch (Integer.parseInt(response)) {
+            case 1:
+                credits_withdraw(credits);
+                credits_menu(credits, user);
+            break;
+            
+            case 2: 
+                credits_deposit(credits);
+                credits_menu(credits, user);
+            break;
+            
+            case 8: misc.log(""); account_menu(user); break;
+            case 9: kill_app(); break;
+                
+            default:
+                misc.error("OUT OF BOUNDS, TRY AGAIN!");
+                credits_menu(credits, user);
+            break;
+        }
+    }
+    
     // -------- CHECKING OPTIONS
     
     private void checking_withdraw(Checking checking) {
@@ -375,5 +423,51 @@ public class Ui {
         // WITHDRAW & LOG SUCCESS
         saving.deposit(converted);
         misc.success("YOU DEPOSITED: " + amount);
+    }
+    
+        // -------- CREDIT OPTIONS
+    
+    private void credits_withdraw(Credit credit) {
+        
+        // ASK HOW MUCH & WITHDRAW
+        String amount = question("WITHDRAW HOW MUCH:", "int, dbl");
+        
+        // CONVERT IT TO A DOUBLE
+        double converted = misc.to_dbl(amount);
+        
+        // CHECK IF AMOUNT IS WITHDRAWABLE
+        boolean check = credit.withdrawable(converted);
+        
+        // IF IT IS
+        if (check == true) {
+            
+            // WITHDRAW & LOG SUCCESS
+            credit.withdraw(converted);
+            misc.success("YOU WITHDREW: " + amount);
+        
+        // IF NOT, LOG ERROR
+        } else { misc.error("ERROR! WITHDRAW LIMIT: " + credit.get_remaining()); }
+    }
+    
+    private void credits_deposit(Credit credit) {
+        
+        // ASK HOW MUCH & DEPOSIT
+        String amount = question("DEPOSIT HOW MUCH:", "int, dbl");
+        
+        // CONVERT IT TO A DOUBLE
+        double converted = misc.to_dbl(amount);
+            
+        // CHECK IF AMOUNT IS DEPOSITABLE
+        boolean check = credit.depositable(converted);
+        
+        // IF IT IS
+        if (check == true) {
+
+            // WITHDRAW & LOG SUCCESS
+            credit.deposit(converted);
+            misc.success("YOU DEPOSITED: " + amount);
+            
+        // IF NOT, LOG ERROR
+        } else { misc.error("ERROR! DEPOSIT LIMIT: " + credit.tab()); }
     }
 }

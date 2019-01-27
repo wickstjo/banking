@@ -7,7 +7,7 @@ public class Bank {
         Backend backend = new Backend();
         Ui ui = new Ui(backend);
         
-        // INITIALIZE THE INTERFACE
+        // START THE MAIN MENU
         ui.main_menu();
     }
 }

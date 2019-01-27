@@ -8,6 +8,7 @@ public class Backend {
     // INITIALIZE THE CHECKINGS & SAVINGS HASHMAPS
     private final Map<Integer, Checking> checkings = new HashMap<>();
     private final Map<Integer, Saving> savings = new HashMap<>();
+    private final Map<Integer, Credit> credits = new HashMap<>();
     
     // MIN-MAX VALUES FOR ACCOUNT NUMBER
     private final Integer min = 100;
@@ -31,6 +32,7 @@ public class Backend {
         // CREATE NEW INSTANCES
         Checking temp_checking = new Checking(name);
         Saving temp_saving = new Saving(name);
+        Credit temp_credit = new Credit(name);
 
         // RANDOMIZE THE ACCOUNT NUMBER
         int random_number = (int) (Math.random() * (this.max - this.min)) + this.min;
@@ -47,6 +49,7 @@ public class Backend {
         // ADD THEM TO THEIR MAPS
         this.checkings.put(random_number, temp_checking);
         this.savings.put(random_number, temp_saving);
+        this.credits.put(random_number, temp_credit);
         
         return random_number;
     }
@@ -63,9 +66,10 @@ public class Backend {
         return temp;
     }
     
-    // GET USER SPECIFIC CHECKING/SAVINGS INSTANCE
+    // GET USER SPECIFIC MAP INSTANCE
     public Checking get_checking(Integer _number) { return checkings.get(_number); }
     public Saving get_saving(Integer _number) { return savings.get(_number); }
+    public Credit get_credit(Integer _number) { return credits.get(_number); }
     
     // CHECK IF AN ACCOUNT NUMBER EXISTS
     public boolean exists(Integer _number) { return checkings.containsKey(_number); }
@@ -74,7 +78,7 @@ public class Backend {
     public void reward_interest() {
         
         // CHECK IF THERE ARE ANY ACCOUNTS
-        if (this.checkings.size() != 0) {
+        if (!this.checkings.isEmpty()) {
         
             // LOOP THROUGH EACH ACCOUNT
             for (Integer account_number : this.checkings.keySet()) {
@@ -84,6 +88,9 @@ public class Backend {
 
                 // ADD INTEREST TO SAVINGS ACCOUNT
                 this.savings.get(account_number).add_interest();
+                
+                // ADD INTEREST TO CREDIT ACCOUNT
+                this.credits.get(account_number).add_interest();
             }
         
         }

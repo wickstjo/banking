@@ -9,7 +9,7 @@ public class Timer extends Thread {
     Misc misc;
     
     // COOLDOWN IN MS
-    Integer cooldown = 1000;
+    Integer cooldown = 10000;
     
     // CONSTRUCTOR
     public Timer(Backend _backend) {
