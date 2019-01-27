@@ -114,7 +114,12 @@ public class Ui {
         if (!accounts.isEmpty()) {
         
             // LOOP THROUGH & LOG ALL THE NUMBERS
-            for (Integer key : accounts) { misc.log("\t" + key); }
+            for (Integer account_number : accounts) {
+                
+                String name = backend.get_checking(account_number).get_owner();
+                
+                misc.log("\t" + account_number + "\t\t" + name);
+            }
         
         } else { misc.log("\tNONE YET!"); }
         
@@ -196,9 +201,9 @@ public class Ui {
                 account_menu(user);
             break;
                 
-            case 2: misc.log(""); checkings_menu(checkings, user); break;
-            case 3: savings_menu(savings, user); break;
-            case 4: misc.log(""); credits_menu(credits, user); break;
+            case 2: misc.log(""); checking_menu(checkings, user); break;
+            case 3: misc.log(""); savings_menu(savings, user); break;
+            case 4: misc.log(""); credit_menu(credits, user); break;
             case 8: misc.log(""); main_menu(); break;
             case 9: kill_app(); break;
                 
@@ -211,32 +216,29 @@ public class Ui {
     
     // -------- USER MENU OPTIONS
     
-    private void account_overview(Checking checkings, Saving savings, Credit credits) {
+    private void account_overview(Checking checking, Saving saving, Credit credit) {
         
         // LOG OUT RELEVANT VALUES -- ROUND NUMBERS TO TWO DECIMALS
-        misc.log("\nACCOUNT OWNER:\t\t\t" + checkings.get_owner());
+        misc.log("\nACCOUNT OWNER:\t\t\t" + checking.get_owner());
         misc.log("----");
-        misc.log("CHECKINGS BALANCE:\t\t" + misc.round(checkings.get_balance(), 2));
-        misc.log("TOTAL WITHDRAWS:\t\t" + misc.round(checkings.get_withdraws(), 2));
-        misc.log("TOTAL DEPOSITS:\t\t\t" + misc.round(checkings.get_deposits(), 2));
+        checking.overview();
         misc.log("----");
-        misc.log("SAVINGS BALANCE:\t\t" + misc.round(savings.get_balance(), 2));
-        misc.log("INTEREST EARNINGS:\t\t" + misc.round(savings.get_earnings(), 2));
+        saving.overview();
         misc.log("----");
-        misc.log("WITHDRAWABLE CREDIT:\t\t" + misc.round(credits.get_remaining(), 2));
-        misc.log("CURRENT TAB:\t\t\t" + misc.round(credits.tab(), 2));
-        misc.log("ONLY INTEREST:\t\t\t" + misc.round(credits.get_interest(), 2) + "\n");
+        credit.overview();
+        misc.log("");
     }
     
-    private void checkings_menu(Checking checkings, Integer user) {
+    private void checking_menu(Checking checkings, Integer user) {
         
         // HEADER
         misc.log("CHECKINGS MENU");
         
         // MENU OPTIONS
         Map<Integer, String> options = new HashMap<>();
-            options.put(1, "WITHDRAW FUNDS");
-            options.put(2, "DEPOSIT FUNDS");
+            options.put(1, "OVERVIEW");
+            options.put(2, "WITHDRAW FUNDS");
+            options.put(3, "DEPOSIT FUNDS");
             options.put(8, "GO BACK");
             options.put(9, "TERMINATE PROGRAM");
         
@@ -250,13 +252,17 @@ public class Ui {
         
         switch (Integer.parseInt(response)) {
             case 1:
+                checking_overview(checkings);
+                checking_menu(checkings, user);
+            break;
+            case 2:
                 checking_withdraw(checkings);
-                checkings_menu(checkings, user);
+                checking_menu(checkings, user);
             break;
             
-            case 2: 
+            case 3: 
                 checking_deposit(checkings);
-                checkings_menu(checkings, user);
+                checking_menu(checkings, user);
             break;
             
             case 8: misc.log(""); account_menu(user); break;
@@ -264,7 +270,7 @@ public class Ui {
                 
             default:
                 misc.error("OUT OF BOUNDS, TRY AGAIN!");
-                checkings_menu(checkings, user);
+                checking_menu(checkings, user);
             break;
         }
     }
@@ -276,8 +282,9 @@ public class Ui {
         
         // MENU OPTIONS
         Map<Integer, String> options = new HashMap<>();
-            options.put(1, "WITHDRAW FUNDS");
-            options.put(2, "DEPOSIT FUNDS");
+            options.put(1, "OVERVIEW");
+            options.put(2, "WITHDRAW FUNDS");
+            options.put(3, "DEPOSIT FUNDS");
             options.put(8, "GO BACK");
             options.put(9, "TERMINATE PROGRAM");
         
@@ -291,11 +298,15 @@ public class Ui {
         
         switch (Integer.parseInt(response)) {
             case 1:
+                savings_overview(savings);
+                savings_menu(savings, user);
+            break;
+            case 2:
                 savings_withdraw(savings);
                 savings_menu(savings, user);
             break;
             
-            case 2: 
+            case 3: 
                 savings_deposit(savings);
                 savings_menu(savings, user);
             break;
@@ -310,15 +321,16 @@ public class Ui {
         }
     }
 
-    private void credits_menu(Credit credits, Integer user) {
+    private void credit_menu(Credit credits, Integer user) {
     
                 // HEADER
         misc.log("CREDITS MENU");
         
         // MENU OPTIONS
         Map<Integer, String> options = new HashMap<>();
-            options.put(1, "WITHDRAW FUNDS");
-            options.put(2, "DEPOSIT FUNDS");
+            options.put(1, "OVERVIEW");
+            options.put(2, "WITHDRAW FUNDS");
+            options.put(3, "DEPOSIT FUNDS");
             options.put(8, "GO BACK");
             options.put(9, "TERMINATE PROGRAM");
         
@@ -332,13 +344,17 @@ public class Ui {
         
         switch (Integer.parseInt(response)) {
             case 1:
-                credits_withdraw(credits);
-                credits_menu(credits, user);
+                credit_overview(credits);
+                credit_menu(credits, user);
+            break;
+            case 2:
+                credit_withdraw(credits);
+                credit_menu(credits, user);
             break;
             
-            case 2: 
-                credits_deposit(credits);
-                credits_menu(credits, user);
+            case 3: 
+                credit_deposit(credits);
+                credit_menu(credits, user);
             break;
             
             case 8: misc.log(""); account_menu(user); break;
@@ -346,12 +362,18 @@ public class Ui {
                 
             default:
                 misc.error("OUT OF BOUNDS, TRY AGAIN!");
-                credits_menu(credits, user);
+                credit_menu(credits, user);
             break;
         }
     }
     
     // -------- CHECKING OPTIONS
+    
+    private void checking_overview(Checking checking) {
+        misc.log("");
+        checking.overview();
+        misc.log("");
+    }
     
     private void checking_withdraw(Checking checking) {
         
@@ -390,6 +412,12 @@ public class Ui {
     
     // -------- SAVING OPTIONS
     
+    private void savings_overview(Saving saving) {
+        misc.log("");
+        saving.overview();
+        misc.log("");
+    }
+    
     private void savings_withdraw(Saving saving) {
         
         // ASK HOW MUCH & WITHDRAW
@@ -427,7 +455,13 @@ public class Ui {
     
         // -------- CREDIT OPTIONS
     
-    private void credits_withdraw(Credit credit) {
+    private void credit_overview(Credit credit) {
+        misc.log("");
+        credit.overview();
+        misc.log("");
+    }
+    
+    private void credit_withdraw(Credit credit) {
         
         // ASK HOW MUCH & WITHDRAW
         String amount = question("WITHDRAW HOW MUCH:", "int, dbl");
@@ -449,7 +483,7 @@ public class Ui {
         } else { misc.error("ERROR! WITHDRAW LIMIT: " + credit.get_remaining()); }
     }
     
-    private void credits_deposit(Credit credit) {
+    private void credit_deposit(Credit credit) {
         
         // ASK HOW MUCH & DEPOSIT
         String amount = question("DEPOSIT HOW MUCH:", "int, dbl");

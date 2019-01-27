@@ -26,4 +26,10 @@ public class Saving extends Account {
         // INCREASE ACCOUNT BALANCE
         this.deposit(reward);
     }
+    
+    // STATISTICAL OVERVIEW
+    @Override public void overview() {
+        misc.log("SAVINGS BALANCE:\t\t" + misc.round(this.get_balance(), 2));
+        misc.log("INTEREST EARNINGS:\t\t" + misc.round(this.get_earnings(), 2));
+    }
 }

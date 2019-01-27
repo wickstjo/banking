@@ -6,8 +6,8 @@ public abstract class Account {
     private final String owner;
     private double balance = 0;
     
-    // FETCH THE MISC MODULE
-    private final Misc misc = new Misc();
+    // FETCH MISC MODULE FOR OVERVIEW METHODS
+    public final Misc misc = new Misc();
 
     // CONSTRUCTOR -- SET OWNER
     public Account (String _owner) { this.owner = _owner; }
@@ -37,4 +37,7 @@ public abstract class Account {
     
     // ADD INTEREST
     public abstract void add_interest();
+    
+    // STATISTICAL OVERVIEW
+    public abstract void overview();
 }

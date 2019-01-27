@@ -46,4 +46,11 @@ public class Checking extends Account {
         this.set_balance(new_balance);
         
     }
+    
+    // STATISTICAL OVERVIEW
+    @Override public void overview() {
+        misc.log("CHECKINGS BALANCE:\t\t" + misc.round(this.get_balance(), 2));
+        misc.log("TOTAL WITHDRAWS:\t\t" + misc.round(this.get_withdraws(), 2));
+        misc.log("TOTAL DEPOSITS:\t\t\t" + misc.round(this.get_deposits(), 2));
+    }
 }

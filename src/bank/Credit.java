@@ -70,4 +70,11 @@ public class Credit extends Account {
     public double get_remaining() { return this.remaining; }
     public double get_limit() { return this.limit; }
     public double get_interest() { return this.interest; }
+    
+    // STATISTICAL OVERVIEW
+    @Override public void overview() {
+        misc.log("WITHDRAWABLE CREDIT:\t\t" + misc.round(this.get_remaining(), 2));
+        misc.log("ENTIRE TAB:\t\t\t" + misc.round(this.tab(), 2));
+        misc.log("INTEREST ONLY:\t\t\t" + misc.round(this.get_interest(), 2));
+    }
 }
