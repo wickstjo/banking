@@ -1,6 +1,6 @@
 package bank;
 
-public class Saving extends Account {
+public class Savings extends Account {
 
     // SET STATIC RATE
     private final double rate = 0.1;
@@ -9,7 +9,7 @@ public class Saving extends Account {
     private double earnings = 0;
     
     // CONSTRUCTOR -- INITIATE ACCOUNT CLASS
-    public Saving (String _owner) { super(_owner); }
+    public Savings (String _owner) { super(_owner); }
     
     // GET EARNINGS
     public double get_earnings() { return this.earnings; }

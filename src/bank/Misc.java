@@ -1,7 +1,8 @@
 package bank;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Misc {
+public class Misc implements Serializable {
     
     // COLOR CODES
     public static final String ANSI_RESET = "\u001B[0m";

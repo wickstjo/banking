@@ -7,18 +7,19 @@ import java.util.Scanner;
 public class Ui {
     
     // FETCH ASSIST MODULES
-    private final Misc misc = new Misc();
     private final Scanner scan = new Scanner(System.in);
     
     // DECLARE ASSIST MODULES
     private final Backend backend;
+    private final Misc misc;
     private final Timer timer;
     
     // CONSTRUCTOR
-    public Ui(Backend _backend) {
+    public Ui(Backend _backend, Misc _misc) {
         
         // SET THE BACKEND MODULE & START THE TIMER
         this.backend = _backend;
+        this.misc = _misc;
         
         // ATTACH THE TIMER OBJECT & START IT
         this.timer = new Timer(this.backend);
@@ -96,8 +97,13 @@ public class Ui {
     
     // KILL APPLICATION
     private void kill_app() {
-        misc.error("APPLICATION KILLED");
+        
+        // ATTEMPT TO SAVE DATA & STOP THE TIMER
+        backend.save();
         stop_timer();
+        
+        // START KILLING PROCESS
+        misc.error("KILLING APPLICATION");
         System.exit(0);
     }
     
@@ -175,7 +181,7 @@ public class Ui {
         
         // FETCH ACCOUNTS CHECKINGS/SAVINGS INSTANCES
         Checking checkings = backend.get_checking(user);
-        Saving savings = backend.get_saving(user);
+        Savings savings = backend.get_saving(user);
         Credit credits = backend.get_credit(user);
         
         // MENU OPTIONS
@@ -216,7 +222,7 @@ public class Ui {
     
     // -------- USER MENU OPTIONS
     
-    private void account_overview(Checking checking, Saving saving, Credit credit) {
+    private void account_overview(Checking checking, Savings saving, Credit credit) {
         
         // LOG OUT RELEVANT VALUES -- ROUND NUMBERS TO TWO DECIMALS
         misc.log("\nACCOUNT OWNER:\t\t\t" + checking.get_owner());
@@ -275,9 +281,9 @@ public class Ui {
         }
     }
     
-    private void savings_menu(Saving savings, Integer user) {
+    private void savings_menu(Savings savings, Integer user) {
     
-                // HEADER
+        // HEADER
         misc.log("SAVINGS MENU");
         
         // MENU OPTIONS
@@ -412,13 +418,13 @@ public class Ui {
     
     // -------- SAVING OPTIONS
     
-    private void savings_overview(Saving saving) {
+    private void savings_overview(Savings saving) {
         misc.log("");
         saving.overview();
         misc.log("");
     }
     
-    private void savings_withdraw(Saving saving) {
+    private void savings_withdraw(Savings saving) {
         
         // ASK HOW MUCH & WITHDRAW
         String amount = question("WITHDRAW HOW MUCH:", "int, dbl");
@@ -440,7 +446,7 @@ public class Ui {
         } else { misc.error("NOT ENOUGH FUNDS!"); }
     }
     
-    private void savings_deposit(Saving saving) {
+    private void savings_deposit(Savings saving) {
         
         // ASK HOW MUCH & DEPOSIT
         String amount = question("DEPOSIT HOW MUCH:", "int, dbl");

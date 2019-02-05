@@ -1,6 +1,7 @@
 package bank;
+import java.io.Serializable;
 
-public abstract class Account {
+public abstract class Account implements Serializable {
 
     // DECLARE INSTANCE VARS
     private final String owner;

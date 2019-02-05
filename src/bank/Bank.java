@@ -4,8 +4,9 @@ public class Bank {
     public static void main(String[] args) {
         
         // FETCH MODULES
-        Backend backend = new Backend();
-        Ui ui = new Ui(backend);
+        Misc misc = new Misc();
+        Backend backend = new Backend(misc);
+        Ui ui = new Ui(backend, misc);
         
         // START THE MAIN MENU
         ui.main_menu();
